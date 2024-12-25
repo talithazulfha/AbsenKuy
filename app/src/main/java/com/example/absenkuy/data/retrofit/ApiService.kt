@@ -1,9 +1,12 @@
 package com.example.absenkuy.data.retrofit
 
 
+import com.example.absenkuy.data.request.AbsensiRequest
+import com.example.absenkuy.data.response.AbsensiResponse
 import com.example.absenkuy.data.response.HomeResponse
 import com.example.absenkuy.data.response.LoginResponse
 import com.example.absenkuy.data.response.MatkulResponse
+import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
@@ -29,5 +32,9 @@ interface ApiService {
         @Path("NIM") NIM: String
     ): MatkulResponse
 
-
+    @POST("absensi/{NIM}")
+    suspend fun absensi(
+        @Path("NIM") NIM: String,
+        @Body absensiRequest: AbsensiRequest
+    ): AbsensiResponse
 }

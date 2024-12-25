@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.absenkuy.data.local.UserPreferences
 import com.example.absenkuy.data.retrofit.ApiConfig
+import com.example.absenkuy.data.retrofit.ApiService
 import com.example.absenkuy.ui.absen.AbsenViewModel
 import com.example.absenkuy.ui.home.HomeViewModel
 import com.example.absenkuy.ui.login.LoginViewModel
@@ -13,7 +14,8 @@ import com.example.absenkuy.ui.mk.MKViewModel
 
 
 
-class ViewModelFactory(private val userPreferences: UserPreferences) : ViewModelProvider
+class ViewModelFactory(
+    private val userPreferences: UserPreferences) : ViewModelProvider
 .NewInstanceFactory() {
 
 
@@ -27,7 +29,7 @@ class ViewModelFactory(private val userPreferences: UserPreferences) : ViewModel
                 HomeViewModel(userPreferences, apiService = ApiConfig.apiService) as T
             }
             modelClass.isAssignableFrom(AbsenViewModel::class.java) -> {
-                AbsenViewModel(userPreferences) as T
+                AbsenViewModel(userPreferences, apiService = ApiConfig.apiService) as T
             }
 
 

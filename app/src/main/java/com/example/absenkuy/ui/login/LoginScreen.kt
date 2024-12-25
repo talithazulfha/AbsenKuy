@@ -79,11 +79,11 @@ fun LoginScreen(
             OutlinedTextField(
                 value = NIM,
                 onValueChange = { NIM = it },
-                label = { Text("Email") },
+                label = { Text("NIM") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
             )
 
             OutlinedTextField(

@@ -76,7 +76,8 @@ fun HomeScreen(navController: NavHostController, homeViewModel: HomeViewModel) {
             else -> {
                 ProfileCard(
                     nama = userData?.nama ?: "",
-                    departemen = userData?.departemen ?: ""
+                    departemen = userData?.departemen ?: "",
+                    id = userData?.id ?: ""
                 )
             }
         }
@@ -127,7 +128,7 @@ fun HeaderSection() {
 
 
 @Composable
-fun ProfileCard(nama: String, departemen: String) {
+fun ProfileCard(nama: String, departemen: String, id: String) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -161,6 +162,11 @@ fun ProfileCard(nama: String, departemen: String) {
                 )
                 Text(
                     text = departemen,
+                    color = Color.Gray,
+                    fontSize = 14.sp
+                )
+                Text(
+                    text = id,
                     color = Color.Gray,
                     fontSize = 14.sp
                 )
