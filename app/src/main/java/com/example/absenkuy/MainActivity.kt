@@ -18,6 +18,7 @@ import com.example.absenkuy.data.retrofit.ApiConfig
 import com.example.absenkuy.ui.absen.AbsenScreen
 import com.example.absenkuy.ui.feedback.FeedbackScreen
 import com.example.absenkuy.ui.feedback.FeedbackViewModel
+import com.example.absenkuy.ui.absen.AbsenViewModel
 import com.example.absenkuy.ui.home.HomeScreen
 import com.example.absenkuy.ui.home.HomeViewModel
 import com.example.absenkuy.ui.izin.IzinScreen
@@ -80,7 +81,18 @@ fun AbsenKuyApp(isUserLoggedInFlow: Flow<Boolean>) {
             IzinScreen(navController = navController, viewModel = izinViewModel)
         }
         composable("presensi") {
-            AbsenScreen(navController = navController)
+            val apiService = ApiConfig.apiService
+            val userPreferences = UserPreferences.getInstance(LocalContext.current)
+            val NIM = userPreferences.getUserNIM().collectAsState(initial = "").value ?: ""
+            val kodeJK = "hadir"
+            val absenViewModel = remember { AbsenViewModel(userPreferences, apiService) }
+
+            AbsenScreen(
+                navController = navController,
+                viewModel = absenViewModel,
+                NIM = NIM,
+                kodeJK = kodeJK
+            )
         }
 
         composable("feedback") {

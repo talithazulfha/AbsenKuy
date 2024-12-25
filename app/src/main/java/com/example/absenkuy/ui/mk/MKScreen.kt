@@ -3,11 +3,18 @@ package com.example.absenkuy.ui.mk
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -44,79 +51,111 @@ fun MKScreen(
         }
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        "Mata Kuliah",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFF1565C0),
-                    titleContentColor = Color.White
-                )
-            )
-        }
-    ) { paddingValues ->
-        Column(
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFF1E3266))
+    ) {
+        // Custom Top Bar
+        Box(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(16.dp)
+                .fillMaxWidth()
+                .background(Color.White)
+                .padding(horizontal = 16.dp, vertical = 12.dp)
         ) {
-            when {
-                userNIM.value?.isEmpty() != false -> {
-                    Text(
-                        text = "Loading user data...",
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center
-                    )
-                }
-                isLoading -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator()
-                    }
-                }
-                error != null -> {
-                    Text(
-                        text = error ?: "Unknown error",
-                        color = Color.Red,
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center
-                    )
-                }
-                matkulList.isEmpty() -> {
-                    Text(
-                        text = "No courses available",
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center
-                    )
-                }
-                else -> {
-                    MKList(
-                        mkList = matkulList,
-                        navController = navController
-                    )
-                }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "Back",
+                    tint = Color(0xFF1E3266),
+                    modifier = Modifier
+                        .clickable { navController.navigateUp() }
+                        .size(24.dp)
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+                Text(
+                    text = "Mata Kuliah",
+                    color = Color(0xFF1E3266),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+        }
+
+        when {
+            userNIM.value?.isEmpty() != false -> {
+                LoadingState()
+            }
+            isLoading -> {
+                LoadingState()
+            }
+            error != null -> {
+                ErrorState(error = error)
+            }
+            matkulList.isEmpty() -> {
+                EmptyState()
+            }
+            else -> {
+                MKList(
+                    mkList = matkulList,
+                    navController = navController
+                )
             }
         }
     }
 }
 
 @Composable
+private fun LoadingState() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator(color = Color.White)
+    }
+}
+
+@Composable
+private fun ErrorState(error: String?) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = error ?: "Unknown error",
+            color = Color.White,
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+@Composable
+private fun EmptyState() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = "No courses available",
+            color = Color.White,
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+@Composable
 fun MKList(
-    mkList: List<String>, // Changed from List<MatkulResponse>
+    mkList: List<String>,
     navController: NavHostController
 ) {
     LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(mkList) { mkName ->
             MKItem(
@@ -127,7 +166,6 @@ fun MKList(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MKItem(
     mkName: String,
@@ -138,47 +176,67 @@ fun MKItem(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .animateContentSize()
-            .padding(4.dp), // Tambahkan padding agar lebih rapih
-        elevation = CardDefaults.cardElevation(4.dp)
+            .animateContentSize(),
+        shape = RoundedCornerShape(8.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = if (expanded) 4.dp else 1.dp
+        )
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { expanded = !expanded }
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = mkName,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
+                    color = Color(0xFF1E3266),
                     modifier = Modifier.weight(1f)
                 )
-
-                IconButton(onClick = { expanded = !expanded }) {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowDropDown,
-                        contentDescription = "Expand course options"
-                    )
-                }
+                Icon(
+                    imageVector = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+                    contentDescription = if (expanded) "Collapse" else "Expand",
+                    tint = Color(0xFF1E3266)
+                )
             }
 
             if (expanded) {
-                Spacer(modifier = Modifier.height(8.dp))
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Button(
-                        onClick = { navController.navigate("presensi") }, // Navigasi ke halaman presensi
-                        modifier = Modifier.fillMaxWidth()
+                Divider(
+                    color = Color(0xFFE5E7EB),
+                    thickness = 1.dp
+                )
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    OutlinedButton(
+                        onClick = { navController.navigate("presensi") },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = Color(0xFF1E3266)
+                        ),
+                        border = BorderStroke(1.dp, Color(0xFF1E3266))
                     ) {
                         Text("Ambil Presensi")
                     }
-                    Button(
-                        onClick = { navController.navigate("izin") }, // Navigasi ke halaman izin
-                        modifier = Modifier.fillMaxWidth()
+                    OutlinedButton(
+                        onClick = { navController.navigate("izin") },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = Color(0xFF1E3266)
+                        ),
+                        border = BorderStroke(1.dp, Color(0xFF1E3266))
                     ) {
                         Text("Permohonan Izin")
                     }

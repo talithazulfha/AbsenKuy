@@ -25,8 +25,10 @@ class AbsenViewModel(private val userPreferences: UserPreferences, apiService: A
                     foto = foto
                 )
                 val response = apiService.absensi(NIM, request)
-                if (response != null) {
-                    _absenState.value = Result.success(response.message?: "Unkmown error")
+                if (response != null && response.data != null) {
+                    _absenState.value = Result.success("Absensi berhasil dicatat")
+                } else {
+                    _absenState.value = Result.failure(Exception("Gagal mencatat absensi"))
                 }
             } catch (e: Exception) {
                 _absenState.value = Result.failure(e)
