@@ -16,6 +16,8 @@ import androidx.navigation.navArgument
 import com.example.absenkuy.data.local.UserPreferences
 import com.example.absenkuy.data.retrofit.ApiConfig
 import com.example.absenkuy.ui.absen.AbsenScreen
+import com.example.absenkuy.ui.feedback.FeedbackScreen
+import com.example.absenkuy.ui.feedback.FeedbackViewModel
 import com.example.absenkuy.ui.absen.AbsenViewModel
 import com.example.absenkuy.ui.home.HomeScreen
 import com.example.absenkuy.ui.home.HomeViewModel
@@ -90,6 +92,12 @@ fun AbsenKuyApp(isUserLoggedInFlow: Flow<Boolean>) {
                 viewModel = absenViewModel,
                 NIM = NIM,
                 kodeJK = kodeJK
+            )
+        }
+
+        composable("feedback") {
+            FeedbackScreen(
+                navController = navController,
             )
         }
     }

@@ -4,6 +4,8 @@ package com.example.absenkuy.data.retrofit
 import com.example.absenkuy.data.request.AbsensiRequest
 import com.example.absenkuy.data.request.IzinRequest
 import com.example.absenkuy.data.response.AbsensiResponse
+import com.example.absenkuy.data.response.FeedbackRequest
+import com.example.absenkuy.data.response.FeedbackResponse
 import com.example.absenkuy.data.response.HomeResponse
 import com.example.absenkuy.data.response.IzinResponse
 import com.example.absenkuy.data.response.LoginResponse
@@ -45,5 +47,11 @@ interface ApiService {
     suspend fun uploadIzin(
         @Body izinRequest: IzinRequest
     ): IzinResponse
+
+    @POST("feedback")
+    suspend fun createFeedback(@Body feedbackRequest: FeedbackRequest): retrofit2.Response<FeedbackResponse>
+
+    @GET("matkul")
+    suspend fun getAllMatkul(): List<MatkulResponse>
 
 }
