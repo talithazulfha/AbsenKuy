@@ -43,8 +43,21 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.absenkuy.R
 import com.example.absenkuy.data.local.UserPreferences
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun IzinScreen(navController: NavHostController, viewModel: IzinViewModel) {
     var reason by remember { mutableStateOf("") }
@@ -58,146 +71,198 @@ fun IzinScreen(navController: NavHostController, viewModel: IzinViewModel) {
         pdfUri.value = uri
     }
 
-
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .background(Color.White)
     ) {
-        // Header
-        Text(
-            text = "Formulir permohonan izin",
-            style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-
-
-        // Input Field - Perihal perizinan
-
-        OutlinedTextField(
-            value = reason,
-            onValueChange = { reason = it },
-            label = { Text("Perihal perizinan") },
-            modifier = Modifier.fillMaxWidth(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
-        )
-
-
-
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-
-        // Bukti Pendukung
-        Text(
-            text = "Bukti Pendukung",
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(186.dp)
-                .border(1.dp, Color.Gray, RoundedCornerShape(8.dp))
-                .background(Color(0xFFF8F8F8)),
-            contentAlignment = Alignment.Center
-        ) {
-            if (pdfUri.value == null) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        TopAppBar(
+            title = {
+                Text(
+                    text = "Formulir permohonan izin",
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        color = Color(0xFF1E3266),
+                        fontWeight = FontWeight.Medium
+                    )
+                )
+            },
+            navigationIcon = {
+                IconButton(onClick = { navController.navigateUp() }) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_absensi),
-                        contentDescription = "Notification",
-                        tint = Color.Black,
-                        modifier = Modifier.size(48.dp)
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "Back",
+                        tint = Color(0xFF1E3266)
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(text = "Upload your file to start uploading", color = Color.Gray)
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(text = "OR", color = Color.Gray)
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Button(onClick = { launcher.launch("application/pdf") }) {
-                        Text(text = "Browse files")
-                    }
                 }
-            } else {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        text = "File yang dipilih: ${pdfUri.value?.lastPathSegment}",
-                        color = Color.Black
+            },
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = Color.White
+            )
+        )
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp)
+        ) {
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Perihal perizinan label
+//            Text(
+//                text = "Perihal perizinan",
+//                style = MaterialTheme.typography.bodyMedium,
+//                color = Color(0xFF1E3266),
+//                modifier = Modifier.padding(bottom = 8.dp)
+//            )
+
+            // Input Field
+            OutlinedTextField(
+                value = reason,
+                onValueChange = { reason = it },
+                label = { Text("Perihal Izin") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 48.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color(0xFF1E3266),
+                    unfocusedBorderColor = Color.Gray,
+                    cursorColor = Color(0xFF1E3266)
+                ),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                shape = RoundedCornerShape(8.dp)
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Bukti Pendukung section
+            Text(
+                text = "Bukti Pendukung",
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color(0xFF1E3266),
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    .border(
+                        width = 1.dp,
+                        color = Color.Gray.copy(alpha = 0.5f),
+                        shape = RoundedCornerShape(8.dp)
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Button(onClick = {
-                        val inputStream = context.contentResolver.openInputStream(pdfUri.value!!)
-                        inputStream?.let {
-                            try {
-                                val fileBytes = it.readBytes()
-                                viewModel.uploadFile(reason, fileBytes)
-                            } catch (e: Exception) {
-                                Toast.makeText(context, "Gagal mengirim file: ${e.message}", Toast.LENGTH_SHORT).show()
-                            }
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(Color(0xFFF8F8F8)),
+                contentAlignment = Alignment.Center
+            ) {
+                if (pdfUri.value == null) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.padding(16.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_absensi),
+                            contentDescription = "Upload",
+                            tint = Color(0xFF1E3266),
+                            modifier = Modifier.size(40.dp)
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "Drag your file(s) to start uploading",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.Gray
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "OR",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color.Gray
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        OutlinedButton(
+                            onClick = { launcher.launch("*/*") },
+                            border = BorderStroke(1.dp, Color(0xFF1E3266)),
+                            colors = ButtonDefaults.outlinedButtonColors(
+                                contentColor = Color(0xFF1E3266)
+                            )
+                        ) {
+                            Text("Browse files")
                         }
-                    }) {
-                        Text(text = "Kirim")
+                    }
+                } else {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.padding(16.dp)
+                    ) {
+                        Text(
+                            text = "File yang dipilih: ${pdfUri.value?.lastPathSegment}",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color(0xFF1E3266)
+                        )
                     }
                 }
             }
 
-
-
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-
-
-
             Text(
-                text = "Only support .pdf",
+                text = "Only support .pdf files",
                 style = MaterialTheme.typography.bodySmall,
-                color = Color.Gray
+                color = Color.Gray,
+                modifier = Modifier.padding(top = 8.dp)
             )
 
+            Spacer(modifier = Modifier.weight(1f))
 
-
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-
-            // Action Buttons
+            // Bottom Buttons
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
+                OutlinedButton(
+                    onClick = { navController.navigateUp() },
+                    modifier = Modifier.weight(1f),
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = Color(0xFF1E3266)
+                    ),
+                    border = BorderStroke(1.dp, Color(0xFF1E3266))
+                ) {
+                    Text(
+                        text = "Batal",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+
                 Button(
                     onClick = {
-                        navController.navigate("matkul/${NIM.value}")
-                    },
-                    colors = ButtonDefaults.buttonColors(Color.Red)
-                ) {
-                    Text(text = "Batal", color = Color.White)
-                }
-                Button(onClick = {
-                    if (pdfUri.value == null || reason.isBlank()) {
-                        Toast.makeText(
-                            context,
-                            "Isi perihal perizinan dan pilih file PDF!",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    } else {
-                        val inputStream = context.contentResolver.openInputStream(pdfUri.value!!)
-                        inputStream?.let {
-                            val fileBytes = it.readBytes()
-                            viewModel.uploadFile(reason, fileBytes)
+                        if (pdfUri.value == null || reason.isBlank()) {
+                            Toast.makeText(
+                                context,
+                                "Isi perihal perizinan dan pilih file!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } else {
+                            val inputStream = context.contentResolver.openInputStream(pdfUri.value!!)
+                            inputStream?.let {
+                                val fileBytes = it.readBytes()
+                                viewModel.uploadFile(reason, fileBytes)
+                            }
                         }
-                    }
-                },
-                    enabled = pdfUri.value != null && reason.isNotBlank()
-                    ) {
-                    Text(text = "Kirim")
+                    },
+                    modifier = Modifier.weight(1f),
+                    enabled = pdfUri.value != null && reason.isNotBlank(),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF1E3266),
+                        disabledContainerColor = Color.Gray
+                    )
+                ) {
+                    Text(
+                        text = "Kirim",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.White
+                    )
                 }
             }
         }
     }
 }
-
