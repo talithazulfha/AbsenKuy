@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavType
@@ -18,6 +19,7 @@ import com.example.absenkuy.ui.absen.AbsenScreen
 import com.example.absenkuy.ui.home.HomeScreen
 import com.example.absenkuy.ui.home.HomeViewModel
 import com.example.absenkuy.ui.izin.IzinScreen
+import com.example.absenkuy.ui.izin.IzinViewModel
 import com.example.absenkuy.ui.login.LoginScreen
 import com.example.absenkuy.ui.mk.MKScreen
 import kotlinx.coroutines.flow.Flow
@@ -69,7 +71,11 @@ fun AbsenKuyApp(isUserLoggedInFlow: Flow<Boolean>) {
             MKScreen(navController = navController, NIM = nim.toString())
         }
         composable("izin") {
-            IzinScreen(navController = navController)
+            val apiService = ApiConfig.apiService
+            val userPreferences = UserPreferences.getInstance(LocalContext.current)
+            val izinViewModel = remember { IzinViewModel(userPreferences, apiService) }
+
+            IzinScreen(navController = navController, viewModel = izinViewModel)
         }
         composable("presensi") {
             AbsenScreen(navController = navController)

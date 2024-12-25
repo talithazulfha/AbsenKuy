@@ -8,6 +8,7 @@ import com.example.absenkuy.data.retrofit.ApiConfig
 import com.example.absenkuy.data.retrofit.ApiService
 import com.example.absenkuy.ui.absen.AbsenViewModel
 import com.example.absenkuy.ui.home.HomeViewModel
+import com.example.absenkuy.ui.izin.IzinViewModel
 import com.example.absenkuy.ui.login.LoginViewModel
 import com.example.absenkuy.ui.mk.MKViewModel
 
@@ -30,6 +31,9 @@ class ViewModelFactory(
             }
             modelClass.isAssignableFrom(AbsenViewModel::class.java) -> {
                 AbsenViewModel(userPreferences, apiService = ApiConfig.apiService) as T
+            }
+            modelClass.isAssignableFrom(IzinViewModel::class.java) -> {
+                IzinViewModel(userPreferences, apiService = ApiConfig.apiService) as T
             }
 
 

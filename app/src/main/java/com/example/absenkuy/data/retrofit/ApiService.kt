@@ -2,10 +2,13 @@ package com.example.absenkuy.data.retrofit
 
 
 import com.example.absenkuy.data.request.AbsensiRequest
+import com.example.absenkuy.data.request.IzinRequest
 import com.example.absenkuy.data.response.AbsensiResponse
 import com.example.absenkuy.data.response.HomeResponse
+import com.example.absenkuy.data.response.IzinResponse
 import com.example.absenkuy.data.response.LoginResponse
 import com.example.absenkuy.data.response.MatkulResponse
+import com.google.android.gms.common.api.Response
 import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -37,4 +40,10 @@ interface ApiService {
         @Path("NIM") NIM: String,
         @Body absensiRequest: AbsensiRequest
     ): AbsensiResponse
+
+    @POST("izin")
+    suspend fun uploadIzin(
+        @Body izinRequest: IzinRequest
+    ): IzinResponse
+
 }

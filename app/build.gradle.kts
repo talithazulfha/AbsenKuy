@@ -72,4 +72,7 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.logging.interceptor)
 
+    implementation (libs.androidx.activity.ktx )
+    implementation (libs.androidx.lifecycle.runtime.ktx.v261)
+
 }
