@@ -223,7 +223,7 @@ fun MenuGrid(navController: NavHostController) {
                 icon = R.drawable.ic_rekap_kehadiran,
                 label = "Rekap Kehadiran",
                 onClick = {
-                    navController.navigate("rekap_kehadiran")
+                    navController.navigate("rekap")
                 },
                 modifier = Modifier.weight(1f)
             )
